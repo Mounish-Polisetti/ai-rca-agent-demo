@@ -1,0 +1,9 @@
+{
+  "dashboard": "BMW MLOps Monitoring",
+  "summary": {
+    "BAT_recall_trend": "Dropped from 0.65 to 0.48",
+    "API_health": "Stable",
+    "model_version": "v12",
+    "main_observation": "battery_status null rate increased sharply"
+  }
+}

@@ -1,0 +1,12 @@
+groups:
+  - name: mlops_alerts
+    rules:
+      - alert: BATRecallDrop
+        expr: model_recall{demand_type="BAT"} < 0.55
+        for: 15s
+        labels:
+          severity: warning
+          demand_type: BAT
+        annotations:
+          summary: "BAT recall dropped below threshold"
+          description: "BAT model recall is below 0.55 and requires RCA investigation."

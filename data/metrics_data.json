@@ -1,0 +1,8 @@
+{
+  "model_recall_bat": 0.48,
+  "model_precision_bat": 0.60,
+  "api_error_rate": 0.01,
+  "api_latency_p95_ms": 180,
+  "prediction_volume_bat": 11850,
+  "model_version": "v12"
+}

@@ -1,0 +1,11 @@
+{
+  "demand_type": "BAT",
+  "battery_status_null_rate": {
+    "previous": 0.03,
+    "current": 0.28
+  },
+  "vehicle_age_mean": {
+    "training": 4.2,
+    "current": 4.5
+  }
+}

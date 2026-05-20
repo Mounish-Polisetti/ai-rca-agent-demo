@@ -1,0 +1,10 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+prometheus-client==0.20.0
+python-dotenv==1.0.1
+langchain==0.2.6
+langchain-community==0.2.6
+langchain-google-genai==1.0.7
+faiss-cpu==1.8.0
+google-generativeai==0.7.2
+requests==2.32.3

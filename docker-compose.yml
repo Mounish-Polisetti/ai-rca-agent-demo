@@ -1,0 +1,66 @@
+version: "3.8"
+
+# Starts 3 services: Prometheus, Alertmanager, Grafana
+# FastAPI and metrics_exporter run on your laptop (not in Docker)
+# so Alertmanager can reach FastAPI at host.docker.internal:8000
+
+services:
+
+  # ── Prometheus ────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"     # Prometheus UI: http://localhost:9090
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"     # allows hot-reload via POST /-/reload
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # Linux: lets Docker reach localhost
+    restart: unless-stopped
+
+  # ── Alertmanager ──────────────────────────────────────────────────────
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: alertmanager
+    ports:
+      - "9093:9093"     # Alertmanager UI: http://localhost:9093
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # Linux: lets Docker reach localhost
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # ── Grafana ───────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    ports:
+      - "3000:3000"     # Grafana UI: http://localhost:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin    # login: admin / admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    volumes:
+      # Datasource provisioning (auto-connects Prometheus)
+      - ./monitoring/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      # Dashboard provisioning config
+      - ./monitoring/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      # The actual dashboard JSON
+      - ./monitoring/grafana/mlops_dashboard.json:/etc/grafana/provisioning/dashboards/mlops_dashboard.json
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+networks:
+  default:
+    name: rca-network
