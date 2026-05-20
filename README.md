@@ -577,17 +577,6 @@ docker compose down
 # then restart
 docker compose up
 ```
-
----
-
-## Interview Explanation
-
-> "I built a production-style MLOps monitoring system. A Python metrics exporter reads a JSON file and serves model performance metrics — BAT recall at 0.48 — to Prometheus. Prometheus evaluates an alert rule every 15 seconds and fires when recall drops below 0.55. Alertmanager receives the alert and sends an HTTP POST webhook to my FastAPI service.
->
-> FastAPI orchestrates the RCA workflow: it collects evidence from three files — metrics, drift report, and Grafana snapshot. Then it runs RAG using LangChain and FAISS: it loads past incident Markdown files, creates Gemini embeddings, stores them in a local FAISS vector database, and retrieves the top-2 most semantically similar past incidents. This context, combined with all the evidence, gets injected into a structured Gemini prompt. Gemini generates an 8-section RCA report covering root cause, timeline, remediation steps, and a retrain-or-fix decision. The report is saved to disk and emailed as HTML.
->
-> The key difference from a basic implementation is the vector DB — FAISS with Gemini embeddings gives semantic search, not keyword matching. So even if the wording differs, similar incidents are retrieved correctly."
-
 ---
 
 ## Future Enhancements
